@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 80" width="100%" height="100%">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Emblem Icon -->
+  <g transform="translate(10, 8)">
+    <!-- Outer Shield / Emblem Base -->
+    <path d="M 32 2 Q 56 6 62 16 Q 62 44 32 62 Q 2 44 2 16 Q 8 6 32 2 Z" fill="url(#shieldGrad)" />
+    <!-- Inner Accent Border -->
+    <path d="M 32 6 Q 52 10 57 18 Q 57 41 32 57 Q 7 41 7 18 Q 12 10 32 6 Z" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.3" />
+
+    <!-- Open Book Pages (Knowledge) -->
+    <path d="M 32 30 Q 20 25 12 28 L 12 43 Q 20 40 32 46 Q 44 40 52 43 L 52 28 Q 44 25 32 30 Z" fill="#FFFFFF" opacity="0.95"/>
+    <path d="M 32 30 L 32 46" stroke="#1E3A8A" stroke-width="1.8" stroke-linecap="round"/>
+
+    <!-- Achievement Flame / Torch Sunburst -->
+    <path d="M 32 12 C 34 18 39 19 39 23 C 39 27 36 29 32 29 C 28 29 25 27 25 23 C 25 19 30 18 32 12 Z" fill="url(#accentGrad)" />
+    <circle cx="32" cy="22" r="2.5" fill="url(#starGrad)" />
+
+    <!-- Target Checkmark Ring -->
+    <circle cx="50" cy="46" r="9" fill="#10B981" />
+    <path d="M 46 46 L 49 49 L 55 43" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Brand Typography -->
+  <g transform="translate(86, 42)">
+    <!-- "Pariksha" -->
+    <text x="0" y="0" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="34" letter-spacing="-0.5" fill="#0F172A">Pariksha<tspan fill="#EA580C">Mitra</tspan></text>
+  </g>
+
+  <!-- Tagline -->
+  <g transform="translate(88, 62)">
+    <text x="0" y="0" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="12.5" letter-spacing="1.2" fill="#64748B" text-transform="uppercase">Your Exam Preparation Partner</text>
+  </g>
+</svg>

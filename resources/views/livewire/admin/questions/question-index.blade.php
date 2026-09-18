@@ -1,0 +1,64 @@
+<div>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Questions') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (session()->has('message'))
+                <div class="mb-4 text-green-600 bg-green-100 p-2 rounded">
+                    {{ session('message') }}
+                </div>
+            @endif
+
+            <div class="flex justify-between mb-4">
+                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search questions..." class="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <a href="{{ route('admin.questions.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Create Question
+                </a>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course/Category</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Question Snippet</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($questions as $question)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $question->id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $question->course->name ?? 'N/A' }} <br>
+                                <span class="text-xs text-gray-400">{{ $question->category->name ?? 'N/A' }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900 truncate max-w-xs">
+                                {{ Str::limit($question->question_text, 50) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $question->status === 'PUBLISHED' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                    {{ $question->status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="{{ route('admin.questions.edit', $question) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                <button wire:click="delete({{ $question->id }})" wire:confirm="Are you sure?" class="text-red-600 hover:text-red-900">Delete</button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <div class="p-4">
+                    {{ $questions->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

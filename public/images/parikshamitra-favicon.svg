@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="favShield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="favAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shield Base -->
+  <path d="M 32 3 Q 56 7 61 17 Q 61 45 32 62 Q 3 45 3 17 Q 8 7 32 3 Z" fill="url(#favShield)" />
+  
+  <!-- Book Pages -->
+  <path d="M 32 29 Q 20 24 12 27 L 12 43 Q 20 40 32 46 Q 44 40 52 43 L 52 27 Q 44 24 32 29 Z" fill="#FFFFFF"/>
+  <path d="M 32 29 L 32 46" stroke="#1E3A8A" stroke-width="2"/>
+
+  <!-- Flame / Sun -->
+  <path d="M 32 11 C 34 17 39 18 39 22 C 39 26 36 28 32 28 C 28 28 25 26 25 22 C 25 18 30 17 32 11 Z" fill="url(#favAccent)" />
+
+  <!-- Badge checkmark -->
+  <circle cx="49" cy="46" r="9" fill="#10B981" />
+  <path d="M 45 46 L 48 49 L 54 43" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

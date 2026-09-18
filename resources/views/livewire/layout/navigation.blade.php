@@ -1,0 +1,249 @@
+<?php
+
+use App\Livewire\Actions\Logout;
+use Livewire\Volt\Component;
+
+new class extends Component
+{
+    /**
+     * Log the current user out of the application.
+     */
+    public function logout(Logout $logout): void
+    {
+        $logout();
+
+        $this->redirect('/', navigate: true);
+    }
+}; ?>
+
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+    <!-- Primary Navigation Menu -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex">
+                <!-- Logo -->
+                <div class="shrink-0 flex items-center">
+                    <a href="{{ route('dashboard') }}" wire:navigate>
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden space-x-4 lg:space-x-6 sm:-my-px sm:ms-10 sm:flex items-center">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('student.practice')" :active="request()->routeIs('student.practice')" wire:navigate>
+                        {{ __('Practice') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('student.exams')" :active="request()->routeIs('student.exams*')" wire:navigate>
+                        {{ __('Mock Exams') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('student.plans')" :active="request()->routeIs('student.plans')" wire:navigate>
+                        {{ __('Plans') }}
+                    </x-nav-link>
+
+                    @if(auth()->check() && (auth()->user()->hasRole('SUPER_ADMIN') || auth()->user()->hasRole('ADMIN')))
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>
+                            {{ __('Admin Dashboard') }}
+                        </x-nav-link>
+
+                        <!-- Academic Management Dropdown -->
+                        <div class="relative flex items-center">
+                            <x-dropdown align="left" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.courses.*', 'admin.categories.*', 'admin.subcategories.*', 'admin.questions.*', 'admin.exams.*') ? 'border-indigo-400 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                        <span>Academic</span>
+                                        <svg class="ms-1 h-4 w-4 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                    </button>
+                                </x-slot>
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="route('admin.courses.index')" wire:navigate>Streams / Courses</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.categories.index')" wire:navigate>Categories</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.subcategories.index')" wire:navigate>Subcategories</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.questions.index')" wire:navigate>Question Bank</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.exams.index')" wire:navigate>Mock Tests</x-dropdown-link>
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
+
+                        <!-- Website CMS Dropdown -->
+                        <div class="relative flex items-center">
+                            <x-dropdown align="left" width="56">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.sliders.*', 'admin.statistics.*', 'admin.homepage-sections.*', 'admin.announcements.*', 'admin.news.*', 'admin.faqs.*', 'admin.testimonials.*', 'admin.pages.*', 'admin.contact-messages.*') ? 'border-indigo-400 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                        <span class="inline-flex items-center gap-1">
+                                            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                            Website CMS
+                                        </span>
+                                        <svg class="ms-1 h-4 w-4 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                    </button>
+                                </x-slot>
+                                <x-slot name="content">
+                                    <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100">Homepage &amp; Branding</div>
+                                    <x-dropdown-link :href="route('admin.homepage-sections.index')" wire:navigate>Section Controls</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.sliders.index')" wire:navigate>Hero Carousel Sliders</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.statistics.index')" wire:navigate>Counter Statistics</x-dropdown-link>
+                                    
+                                    <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-t border-gray-100">Content &amp; Community</div>
+                                    <x-dropdown-link :href="route('admin.announcements.index')" wire:navigate>Announcements &amp; Alerts</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.news.index')" wire:navigate>News, Articles &amp; Syllabus</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.faqs.index')" wire:navigate>FAQ Management</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.testimonials.index')" wire:navigate>Testimonials</x-dropdown-link>
+                                    
+                                    <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-t border-gray-100">Pages &amp; Support</div>
+                                    <x-dropdown-link :href="route('admin.pages.index')" wire:navigate>Static &amp; Legal Pages</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.contact-messages.index')" wire:navigate>Contact Inquiries</x-dropdown-link>
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
+
+                        <!-- Operations Dropdown -->
+                        <div class="relative flex items-center">
+                            <x-dropdown align="left" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.plans.*', 'admin.payments.*', 'admin.audit-logs.*', 'admin.settings.*', 'admin.users.*') ? 'border-indigo-400 text-gray-900 font-bold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                        <span>Operations</span>
+                                        <svg class="ms-1 h-4 w-4 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                    </button>
+                                </x-slot>
+                                <x-slot name="content">
+                                    @if(auth()->user()->hasRole('SUPER_ADMIN'))
+                                        <x-dropdown-link :href="route('admin.users.index')" wire:navigate>Admin Users</x-dropdown-link>
+                                    @endif
+                                    <x-dropdown-link :href="route('admin.plans.index')" wire:navigate>Subscription Plans</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.payments.index')" wire:navigate>Verify Payments</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.audit-logs.index')" wire:navigate>Audit Logs</x-dropdown-link>
+                                    <x-dropdown-link :href="route('admin.settings.index')" wire:navigate>Site Settings</x-dropdown-link>
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Right Actions: View Public Website & Profile -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-3">
+                <a href="{{ route('public.home') }}" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition" title="Open Public Website">
+                    <span>Public Site</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
+
+                <!-- Settings Dropdown -->
+                <x-dropdown align="right" width="48">
+                    <x-slot name="trigger">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
+
+                            <div class="ms-1">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+                        <x-dropdown-link :href="route('profile')" wire:navigate>
+                            {{ __('Profile') }}
+                        </x-dropdown-link>
+
+                        <!-- Authentication -->
+                        <button wire:click="logout" class="w-full text-start">
+                            <x-dropdown-link>
+                                {{ __('Log Out') }}
+                            </x-dropdown-link>
+                        </button>
+                    </x-slot>
+                </x-dropdown>
+            </div>
+
+            <!-- Hamburger -->
+            <div class="-me-2 flex items-center sm:hidden">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Responsive Navigation Menu -->
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('public.home')" target="_blank">
+                {{ __('🌐 Visit Public Website') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('student.practice')" :active="request()->routeIs('student.practice')" wire:navigate>
+                {{ __('Practice Mode') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('student.exams')" :active="request()->routeIs('student.exams*')" wire:navigate>
+                {{ __('Mock Exams') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('student.plans')" :active="request()->routeIs('student.plans')" wire:navigate>
+                {{ __('Plans') }}
+            </x-responsive-nav-link>
+
+            @if(auth()->check() && (auth()->user()->hasRole('SUPER_ADMIN') || auth()->user()->hasRole('ADMIN')))
+                <div class="pt-2 pb-2 border-t border-gray-200">
+                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>
+                        {{ __('Admin Dashboard') }}
+                    </x-responsive-nav-link>
+
+                    <div class="px-4 text-xs font-bold uppercase tracking-wider text-indigo-600 mb-1 mt-3">Website CMS</div>
+                    <x-responsive-nav-link :href="route('admin.homepage-sections.index')" :active="request()->routeIs('admin.homepage-sections.*')" wire:navigate>Homepage Sections</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.sliders.index')" :active="request()->routeIs('admin.sliders.*')" wire:navigate>Hero Sliders</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.statistics.index')" :active="request()->routeIs('admin.statistics.*')" wire:navigate>Statistics</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.announcements.index')" :active="request()->routeIs('admin.announcements.*')" wire:navigate>Announcements</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.news.index')" :active="request()->routeIs('admin.news.*')" wire:navigate>News & Articles</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.faqs.index')" :active="request()->routeIs('admin.faqs.*')" wire:navigate>FAQs</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')" wire:navigate>Testimonials</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.pages.index')" :active="request()->routeIs('admin.pages.*')" wire:navigate>Static Pages</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.contact-messages.index')" :active="request()->routeIs('admin.contact-messages.*')" wire:navigate>Contact Inquiries</x-responsive-nav-link>
+
+                    <div class="px-4 text-xs font-bold uppercase tracking-wider text-indigo-600 mb-1 mt-3">Academic &amp; Exams</div>
+                    <x-responsive-nav-link :href="route('admin.courses.index')" :active="request()->routeIs('admin.courses.*')" wire:navigate>Courses</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.questions.index')" :active="request()->routeIs('admin.questions.*')" wire:navigate>Questions</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.exams.index')" :active="request()->routeIs('admin.exams.*')" wire:navigate>Exams</x-responsive-nav-link>
+                    
+                    <div class="px-4 text-xs font-bold uppercase tracking-wider text-indigo-600 mb-1 mt-3">Operations</div>
+                    @if(auth()->user()->hasRole('SUPER_ADMIN'))
+                        <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" wire:navigate>Admin Users</x-responsive-nav-link>
+                    @endif
+                    <x-responsive-nav-link :href="route('admin.payments.index')" :active="request()->routeIs('admin.payments.*')" wire:navigate>Verify Payments</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.audit-logs.index')" :active="request()->routeIs('admin.audit-logs.*')" wire:navigate>Audit Logs</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')" wire:navigate>Settings</x-responsive-nav-link>
+                </div>
+            @endif
+        </div>
+
+        <!-- Responsive Settings Options -->
+        <div class="pt-4 pb-1 border-t border-gray-200">
+            <div class="px-4">
+                <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
+                <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
+            </div>
+
+            <div class="mt-3 space-y-1">
+                <x-responsive-nav-link :href="route('profile')" wire:navigate>
+                    {{ __('Profile') }}
+                </x-responsive-nav-link>
+
+                <!-- Authentication -->
+                <button wire:click="logout" class="w-full text-start">
+                    <x-responsive-nav-link>
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
