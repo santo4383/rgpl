@@ -46,6 +46,30 @@
                 @endif
 
                 <form wire:submit.prevent="save" onsubmit="syncAllQuill()">
+                    <!-- Auto-Generated Question Info (Non-editable) -->
+                    <div class="mb-6 bg-slate-50 border border-slate-200 rounded-lg p-4 flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500">Question Code (Non-Editable)</span>
+                            <span class="text-lg font-mono font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded inline-block mt-1 select-none">
+                                {{ $questionDetails['code'] }}
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <div>
+                                <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500">Sequence No.</span>
+                                <span class="text-sm font-bold text-slate-800 mt-1 block select-none">
+                                    {{ $questionDetails['number'] ? '#'.$questionDetails['number'] : 'N/A' }}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500">Total Course Questions</span>
+                                <span class="text-sm font-bold text-slate-800 mt-1 block select-none">
+                                    {{ $questionDetails['total_course_questions'] }} {{ Str::plural('question', $questionDetails['total_course_questions']) }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Course, Category, Subcategory -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div>
@@ -70,7 +94,7 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 font-bold mb-2">Subcategory (Optional)</label>
-                            <select wire:model="subcategory_id" class="w-full border-gray-300 rounded shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ empty($available_subcategories) ? 'disabled' : '' }}>
+                            <select wire:model.live="subcategory_id" class="w-full border-gray-300 rounded shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ empty($available_subcategories) ? 'disabled' : '' }}>
                                 <option value="">-- Select Subcategory --</option>
                                 @foreach($available_subcategories as $sub)
                                     <option value="{{ $sub->id }}">{{ $sub->name }}</option>
@@ -94,7 +118,7 @@
                         <div class="flex justify-between items-center mb-4">
                             <div>
                                 <h3 class="text-lg font-bold text-gray-800">Options <span class="text-red-500">*</span></h3>
-                                <p class="text-xs text-gray-500">Add the choices and mark one radio button as the correct answer.</p>
+                                <p class="text-xs text-gray-500">Add the choices and check the checkbox(es) for all correct answers (multiple correct options allowed).</p>
                             </div>
                             <button type="button" wire:click="addOption" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded shadow-sm">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -108,7 +132,7 @@
                             <div class="flex items-start mb-4 bg-white p-4 border border-gray-200 rounded-lg shadow-xs" wire:key="opt-row-{{ $option['uid'] ?? $index }}">
                                 <div class="mr-4 mt-2 flex flex-col items-center select-none">
                                     <span class="font-bold text-lg text-gray-700 mb-1.5">{{ $option['option_key'] }}</span>
-                                    <input type="radio" name="correct_option_radio" wire:click="setCorrectOption({{ $index }})" {{ !empty($option['is_correct']) ? 'checked' : '' }} class="h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 cursor-pointer">
+                                    <input type="checkbox" wire:model="options.{{ $index }}.is_correct" class="h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 rounded cursor-pointer">
                                     <span class="text-[11px] font-medium text-green-700 mt-1">Correct</span>
                                 </div>
                                 <div class="flex-grow min-w-0" wire:ignore>

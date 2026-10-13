@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'mobile_number', 'dob', 'address', 'email', 'password', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -25,6 +25,7 @@ class User extends Authenticatable
         'address',
         'email',
         'password',
+        'is_active',
     ];
 
     /**
@@ -37,6 +38,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -179,5 +181,39 @@ class User extends Authenticatable
     public function examAttempts()
     {
         return $this->hasMany(ExamAttempt::class);
+    }
+
+    public function activeSubscription(): ?Subscription
+    {
+        return $this->subscriptions()
+            ->where('status', 'ACTIVE')
+            ->where('expires_at', '>', now())
+            ->with('plan')
+            ->latest('expires_at')
+            ->first();
+    }
+
+    public function totalFreeQuota(): int
+    {
+        $enrolledCourses = $this->courses;
+        if ($enrolledCourses->isNotEmpty()) {
+            return (int) $enrolledCourses->sum('free_question_limit');
+        }
+
+        return (int) Setting::get('default_free_quota', 500);
+    }
+
+    public function totalQuestionsUsed(): int
+    {
+        return $this->uniqueQuestionsAttemptedCount();
+    }
+
+    public function totalQuotaRemaining(): int
+    {
+        if ($this->hasActiveSubscription()) {
+            return -1; // Unlimited
+        }
+
+        return max(0, $this->totalFreeQuota() - $this->totalQuestionsUsed());
     }
 }

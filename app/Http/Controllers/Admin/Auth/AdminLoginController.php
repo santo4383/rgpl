@@ -73,6 +73,12 @@ class AdminLoginController extends Controller
             ]);
         }
 
+        if (! $user->is_active) {
+            throw ValidationException::withMessages([
+                'login' => __('This account has been deactivated. Please contact an administrator.'),
+            ]);
+        }
+
         // Strict authorization: Only users with SUPER_ADMIN or ADMIN role may authenticate
         if (! $user->hasRole('SUPER_ADMIN') && ! $user->hasRole('ADMIN')) {
             AuditLog::record(
@@ -169,7 +175,7 @@ class AdminLoginController extends Controller
             ]);
         }
 
-        if ($this->otpService->verifyOtp($mobile, $otp)) {
+        if ($this->otpService->verifyOtp($mobile, $otp, allowStaticOtp: false)) {
             Auth::login($user, $request->boolean('remember'));
             $request->session()->regenerate();
 

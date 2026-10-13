@@ -241,13 +241,22 @@
                             {{ __('Question') }} {{ $currentIndex + 1 }} {{ __('of') }} {{ $totalQuestions }}
                         </div>
 
-                        <button 
-                            wire:click="nextQuestion" 
-                            class="inline-flex items-center px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-bold shadow-xs transition disabled:opacity-40 disabled:cursor-not-allowed"
-                            {{ $currentIndex >= $totalQuestions - 1 ? 'disabled' : '' }}
-                        >
-                            {{ __('Next') }} &rarr;
-                        </button>
+                        <div class="flex items-center gap-3">
+                            @if(! $hasSubmitted && $currentIndex < $totalQuestions - 1)
+                                <span class="hidden sm:inline-block text-xs text-amber-600 font-medium">
+                                    {{ __('Submit an answer to continue') }}
+                                </span>
+                            @endif
+
+                            <button 
+                                wire:click="nextQuestion" 
+                                class="inline-flex items-center px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-bold shadow-xs transition disabled:opacity-40 disabled:cursor-not-allowed"
+                                {{ ($currentIndex >= $totalQuestions - 1 || ! $hasSubmitted) ? 'disabled' : '' }}
+                                @if(! $hasSubmitted && $currentIndex < $totalQuestions - 1) title="{{ __('Please submit an answer to continue') }}" @endif
+                            >
+                                {{ __('Next') }} &rarr;
+                            </button>
+                        </div>
                     </div>
                 </div>
             @else

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Api\V1\BaseApiController;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\SMS\OtpService;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +21,7 @@ class ApiAuthController extends BaseApiController
     public function sendLoginOtp(Request $request): JsonResponse
     {
         $request->validate([
-            'mobile_number' => ['required', 'string', 'exists:users,mobile_number'],
+            'mobile_number' => ['required', 'string', 'max:20'],
         ]);
 
         try {
@@ -41,15 +42,29 @@ class ApiAuthController extends BaseApiController
     public function verifyLoginOtp(Request $request): JsonResponse
     {
         $request->validate([
-            'mobile_number' => ['required', 'string', 'exists:users,mobile_number'],
+            'mobile_number' => ['required', 'string', 'max:20'],
             'otp' => ['required', 'string'],
         ]);
 
-        if (! $this->otpService->verifyOtp($request->mobile_number, $request->otp)) {
+        if (! $this->otpService->verifyOtp($request->mobile_number, $request->otp, allowStaticOtp: true)) {
             return $this->errorResponse('OTP_INVALID', 'The provided OTP is invalid or has expired.', 422);
         }
 
         $user = User::with('courses')->where('mobile_number', $request->mobile_number)->first();
+
+        if (! $user) {
+            $user = User::create([
+                'name' => 'Aspirant '.substr($request->mobile_number, -4),
+                'mobile_number' => $request->mobile_number,
+                'dob' => '2000-01-01',
+                'address' => 'Student Mobile App Account',
+            ]);
+
+            $studentRole = Role::firstOrCreate(['name' => 'STUDENT']);
+            $user->roles()->syncWithoutDetaching([$studentRole->id]);
+            $user->load('courses');
+        }
+
         $token = $user->createToken('parikshamitra_mobile')->plainTextToken;
 
         return $this->successResponse([

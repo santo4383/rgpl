@@ -19,10 +19,37 @@ class DashboardController extends Controller
     {
         // Students
         $studentsQuery = User::whereDoesntHave('roles', function ($q) {
-            $q->where('name', 'SUPER_ADMIN');
+            $q->whereIn('name', ['SUPER_ADMIN', 'ADMIN']);
         });
-        $totalStudents = $studentsQuery->count();
+        $totalStudents = (clone $studentsQuery)->count();
+        $activeStudentsCount = (clone $studentsQuery)->where('is_active', true)->count();
+        $deactivatedStudentsCount = (clone $studentsQuery)->where('is_active', false)->count();
         $newStudentsThisWeek = (clone $studentsQuery)->where('created_at', '>=', now()->subDays(7))->count();
+
+        // Recent Registered Students with Subscriptions, Courses, and Quota Details
+        $recentStudents = (clone $studentsQuery)
+            ->with(['courses', 'subscriptions.plan'])
+            ->withCount(['practiceAttempts', 'examAttempts'])
+            ->latest('created_at')
+            ->take(6)
+            ->get();
+
+        // Student Logins Today
+        $todayStudentLoginsCount = AuditLog::where('action', 'LOGIN')
+            ->where('created_at', '>=', now()->startOfDay())
+            ->whereHas('user', function ($q) {
+                $q->whereDoesntHave('roles', fn ($r) => $r->whereIn('name', ['SUPER_ADMIN', 'ADMIN']));
+            })
+            ->count();
+
+        // Recent Student Activities (logins, registrations, payments)
+        $recentStudentActivities = AuditLog::with('user')
+            ->whereHas('user', function ($q) {
+                $q->whereDoesntHave('roles', fn ($r) => $r->whereIn('name', ['SUPER_ADMIN', 'ADMIN']));
+            })
+            ->latest('created_at')
+            ->take(8)
+            ->get();
 
         // Content
         $totalCourses = Course::count();
@@ -64,7 +91,12 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', [
             'totalStudents' => $totalStudents,
+            'activeStudentsCount' => $activeStudentsCount,
+            'deactivatedStudentsCount' => $deactivatedStudentsCount,
             'newStudentsThisWeek' => $newStudentsThisWeek,
+            'recentStudents' => $recentStudents,
+            'todayStudentLoginsCount' => $todayStudentLoginsCount,
+            'recentStudentActivities' => $recentStudentActivities,
             'totalCourses' => $totalCourses,
             'totalQuestions' => $totalQuestions,
             'publishedQuestions' => $publishedQuestions,

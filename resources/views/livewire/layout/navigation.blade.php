@@ -51,6 +51,10 @@ new class extends Component
                             {{ __('Admin Dashboard') }}
                         </x-nav-link>
 
+                        <x-nav-link :href="route('admin.students.index')" :active="request()->routeIs('admin.students.*')" wire:navigate>
+                            {{ __('Students') }}
+                        </x-nav-link>
+
                         <!-- Academic Management Dropdown -->
                         <div class="relative flex items-center">
                             <x-dropdown align="left" width="48">
@@ -196,6 +200,9 @@ new class extends Component
                 <div class="pt-2 pb-2 border-t border-gray-200">
                     <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>
                         {{ __('Admin Dashboard') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.students.index')" :active="request()->routeIs('admin.students.*')" wire:navigate>
+                        {{ __('Student Management') }}
                     </x-responsive-nav-link>
 
                     <div class="px-4 text-xs font-bold uppercase tracking-wider text-indigo-600 mb-1 mt-3">Website CMS</div>

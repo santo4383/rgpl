@@ -3,15 +3,15 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     @if (!session('otp_login_mobile'))
-        <!-- STEP 1: Enter Mobile Number -->
+        <!-- Password-based Login -->
         <div class="mb-6">
             <h2 class="text-xl font-bold text-gray-900">Student &amp; Aspirant Login</h2>
             <p class="text-sm text-gray-600 mt-1">
-                {{ __('Enter your mobile number to receive a One-Time Password (OTP).') }}
+                {{ __('Sign in with your registered mobile number and password.') }}
             </p>
         </div>
 
-        <form method="POST" action="{{ route('login.send-otp') }}">
+        <form method="POST" action="{{ route('login.store') }}">
             @csrf
             <div>
                 <x-input-label for="mobile_number" :value="__('Mobile Number')" />
@@ -34,9 +34,30 @@
                 <x-input-error :messages="$errors->get('mobile_number')" class="mt-2" />
             </div>
 
+            <div class="mt-4">
+                <x-input-label for="password" :value="__('Password')" />
+                <x-text-input 
+                    id="password" 
+                    class="block mt-1 w-full" 
+                    type="password" 
+                    name="password" 
+                    required 
+                    autocomplete="current-password" 
+                    placeholder="••••••••" 
+                />
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            </div>
+
+            <div class="block mt-4">
+                <label for="remember_me" class="inline-flex items-center">
+                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                    <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                </label>
+            </div>
+
             <div class="mt-6 flex flex-col gap-3">
                 <x-primary-button class="w-full justify-center py-2.5">
-                    {{ __('Send OTP') }}
+                    {{ __('Sign In') }}
                 </x-primary-button>
 
                 <div class="text-center text-xs text-gray-600 pt-2 border-t border-gray-100">

@@ -24,7 +24,7 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course/Category</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Question Snippet</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -34,7 +34,11 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($questions as $question)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $question->id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="font-mono font-bold text-xs bg-slate-100 text-indigo-700 px-2 py-1 rounded border border-slate-200">
+                                    {{ $question->question_code ?? ('#'.$question->id) }}
+                                </span>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $question->course->name ?? 'N/A' }} <br>
                                 <span class="text-xs text-gray-400">{{ $question->category->name ?? 'N/A' }}</span>

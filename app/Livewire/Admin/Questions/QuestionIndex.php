@@ -23,7 +23,9 @@ class QuestionIndex extends Component
         return view('livewire.admin.questions.question-index', [
             'questions' => Question::where('question_text', 'like', "%{$this->search}%")
                 ->orWhere('question_html', 'like', "%{$this->search}%")
+                ->orWhere('question_code', 'like', "%{$this->search}%")
                 ->with(['course', 'category', 'subcategory'])
+                ->latest()
                 ->paginate(15),
         ])->layout('layouts.app');
     }

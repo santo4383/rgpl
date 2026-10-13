@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Role;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\SMS\OtpService;
@@ -42,6 +43,44 @@ class OtpRegisterController extends Controller
         $courses = Course::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
 
         return view('auth.otp-register', compact('courses'));
+    }
+
+    /**
+     * Handle direct student registration with password (OTP disabled).
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'mobile_number' => ['required', 'string', 'regex:/^[0-9]{10}$/', 'unique:users,mobile_number'],
+            'dob' => ['required', 'date'],
+            'address' => ['required', 'string'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'course_ids' => ['nullable', 'array'],
+            'course_ids.*' => ['exists:courses,id'],
+        ], [
+            'mobile_number.regex' => 'The mobile number must be a valid 10-digit number.',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'mobile_number' => $request->mobile_number,
+            'dob' => $request->dob,
+            'address' => $request->address,
+            'password' => $request->password,
+        ]);
+
+        $studentRole = Role::firstOrCreate(['name' => 'STUDENT'], ['description' => 'Student']);
+        $user->roles()->syncWithoutDetaching([$studentRole->id]);
+
+        if (! empty($request->course_ids)) {
+            $user->courses()->sync($request->course_ids);
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     public function sendOtp(Request $request)

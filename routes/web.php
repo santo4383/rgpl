@@ -32,6 +32,7 @@ use App\Livewire\Admin\Plans\PlanIndex;
 use App\Livewire\Admin\Questions\QuestionForm;
 use App\Livewire\Admin\Questions\QuestionIndex;
 use App\Livewire\Admin\Settings\SettingsManager;
+use App\Livewire\Admin\Students\StudentManager;
 use App\Livewire\Admin\Subcategories\SubcategoryForm;
 use App\Livewire\Admin\Subcategories\SubcategoryIndex;
 use App\Livewire\Admin\Users\AdminUserManager;
@@ -82,37 +83,16 @@ Route::get('/refund-policy', [StaticPageController::class, 'refund'])->name('pub
 |--------------------------------------------------------------------------
 */
 
-Route::get('/dashboard', Dashboard::class)
-    ->middleware(['auth'])
-    ->name('dashboard');
-
-Route::get('/student/practice/{course?}', PracticeEngine::class)
-    ->middleware(['auth'])
-    ->name('student.practice');
-
-Route::get('/subscriptions/plans', PlanList::class)
-    ->middleware(['auth'])
-    ->name('student.plans');
-
-Route::get('/subscriptions/history', MySubscriptions::class)
-    ->middleware(['auth'])
-    ->name('student.subscriptions');
-
-Route::get('/student/exams', ExamList::class)
-    ->middleware(['auth'])
-    ->name('student.exams');
-
-Route::get('/exams/{attempt}/take', ExamTake::class)
-    ->middleware(['auth'])
-    ->name('student.exams.take');
-
-Route::get('/exams/{attempt}/result', ExamResult::class)
-    ->middleware(['auth'])
-    ->name('student.exams.result');
-
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+Route::middleware(['auth', 'active'])->group(function () {
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/student/practice/{course?}', PracticeEngine::class)->name('student.practice');
+    Route::get('/subscriptions/plans', PlanList::class)->name('student.plans');
+    Route::get('/subscriptions/history', MySubscriptions::class)->name('student.subscriptions');
+    Route::get('/student/exams', ExamList::class)->name('student.exams');
+    Route::get('/exams/{attempt}/take', ExamTake::class)->name('student.exams.take');
+    Route::get('/exams/{attempt}/result', ExamResult::class)->name('student.exams.result');
+    Route::view('profile', 'profile')->name('profile');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -144,6 +124,9 @@ Route::post('/admin/logout', [AdminLoginController::class, 'destroy'])->name('ad
 
 Route::prefix('admin')->middleware(['auth', 'role:SUPER_ADMIN,ADMIN'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+    // Student Accounts & Activity Management
+    Route::get('/students', StudentManager::class)->name('admin.students.index');
 
     // Super Admin User Management
     Route::get('/users', AdminUserManager::class)

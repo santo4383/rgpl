@@ -56,10 +56,12 @@
                         <div class="text-2xl sm:text-3xl font-black text-gray-900">
                             {{ $totalStudents }}
                         </div>
-                        <div class="text-xs text-gray-500 mt-1 flex items-center gap-1.5">
-                            <span class="text-emerald-700 font-semibold">+{{ $newStudentsThisWeek }} {{ __('this week') }}</span>
+                        <div class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 flex-wrap">
+                            <span class="text-emerald-700 font-semibold">{{ $activeStudentsCount }} active</span>
                             <span>&bull;</span>
-                            <span class="text-indigo-700 font-semibold">{{ $activeSubscriptions }} {{ __('subscribed') }}</span>
+                            <span class="text-rose-700 font-semibold">{{ $deactivatedStudentsCount }} inactive</span>
+                            <span>&bull;</span>
+                            <span class="text-indigo-700 font-semibold">{{ $activeSubscriptions }} subscribed</span>
                         </div>
                     </div>
                 </div>
@@ -100,6 +102,158 @@
                             <span class="text-purple-700 font-bold">{{ $examPassRate }}% {{ __('pass rate') }}</span>
                             <span>&bull;</span>
                             <span>{{ $totalPracticeAttempts }} {{ __('practice MCQs') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STUDENT ACCOUNTS & ACTIVITY MONITORING SECTION -->
+            <div class="bg-white rounded-2xl shadow-xs border border-gray-200 overflow-hidden">
+                <div class="px-6 py-5 bg-gradient-to-r from-gray-50 to-indigo-50/30 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-gray-900 text-base uppercase tracking-wider">{{ __('Student Accounts & Quota Central') }}</h3>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
+                                {{ $todayStudentLoginsCount }} {{ __('logins today') }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-0.5">{{ __('Real-time student account monitoring, plan subscriptions, free quotas, and usage tracking.') }}</p>
+                    </div>
+                    <a href="{{ route('admin.students.index') }}" wire:navigate class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
+                        <span>{{ __('Manage All Students') }}</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-gray-200">
+                    <!-- Left: Latest Students Overview Table (8 cols) -->
+                    <div class="lg:col-span-8 p-0">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-100 text-left text-xs">
+                                <thead class="bg-gray-50/50 text-gray-500 uppercase font-semibold">
+                                    <tr>
+                                        <th class="px-6 py-3">{{ __('Student') }}</th>
+                                        <th class="px-6 py-3">{{ __('Subscription') }}</th>
+                                        <th class="px-6 py-3">{{ __('Free Quota / Used') }}</th>
+                                        <th class="px-6 py-3 text-center">{{ __('Status') }}</th>
+                                        <th class="px-6 py-3 text-right">{{ __('Action') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    @forelse($recentStudents as $student)
+                                        @php
+                                            $activeSub = $student->activeSubscription();
+                                            $freeQuota = $student->totalFreeQuota();
+                                            $used = $student->totalQuestionsUsed();
+                                            $remaining = $student->totalQuotaRemaining();
+                                        @endphp
+                                        <tr class="hover:bg-gray-50/60 transition">
+                                            <td class="px-6 py-3.5">
+                                                <div class="font-bold text-gray-900 text-sm">{{ $student->name }}</div>
+                                                <div class="text-[11px] text-gray-500 font-mono">+91 {{ $student->mobile_number }}</div>
+                                                @if($student->courses->isNotEmpty())
+                                                    <div class="text-[10px] text-indigo-600 mt-0.5 truncate max-w-xs font-medium">
+                                                        {{ $student->courses->pluck('name')->implode(', ') }}
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-3.5 whitespace-nowrap">
+                                                @if($activeSub)
+                                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-bold text-[11px] bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                        {{ $activeSub->plan ? $activeSub->plan->name : 'Subscribed' }}
+                                                    </span>
+                                                    <div class="text-[10px] text-gray-400 mt-0.5">Until {{ $activeSub->expires_at->format('d M Y') }}</div>
+                                                @else
+                                                    <span class="px-2 py-0.5 rounded font-medium text-[11px] bg-gray-100 text-gray-600">
+                                                        {{ __('Free Tier') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-3.5 whitespace-nowrap">
+                                                @if($activeSub)
+                                                    <span class="font-bold text-emerald-700">{{ __('Unlimited') }}</span>
+                                                    <div class="text-[11px] text-gray-500">{{ $used }} {{ __('practiced') }}</div>
+                                                @else
+                                                    <div class="font-bold text-gray-900">{{ $used }} / {{ $freeQuota }}</div>
+                                                    <div class="text-[10px] {{ $remaining === 0 ? 'text-rose-600 font-bold' : 'text-gray-500' }}">
+                                                        {{ $remaining }} {{ __('remaining') }}
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-3.5 whitespace-nowrap text-center">
+                                                @if($student->is_active)
+                                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                                        {{ __('Active') }}
+                                                    </span>
+                                                @else
+                                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
+                                                        {{ __('Deactivated') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-3.5 whitespace-nowrap text-right">
+                                                <a href="{{ route('admin.students.index', ['search' => $student->mobile_number]) }}" wire:navigate class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] rounded-lg transition">
+                                                    {{ __('Inspect') }} &rarr;
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-8 text-center text-gray-400 text-xs">
+                                                {{ __('No registered students yet.') }}
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Live Student Activity Stream (4 cols) -->
+                    <div class="lg:col-span-4 p-5 bg-gray-50/40 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider">{{ __('Live Student Activity Feed') }}</h4>
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Live stream"></span>
+                            </div>
+
+                            @if($recentStudentActivities->isNotEmpty())
+                                <div class="space-y-3">
+                                    @foreach($recentStudentActivities as $act)
+                                        <div class="bg-white p-3 rounded-xl border border-gray-200 text-xs shadow-2xs">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <div class="font-bold text-gray-900 truncate">
+                                                    {{ $act->user ? $act->user->name : 'Student' }}
+                                                </div>
+                                                <span class="text-[10px] text-gray-400 whitespace-nowrap shrink-0">
+                                                    {{ $act->created_at->diffForHumans() }}
+                                                </span>
+                                            </div>
+                                            <div class="text-[11px] text-gray-600 mt-1 flex items-center gap-1.5">
+                                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                                    {{ $act->action }}
+                                                </span>
+                                                @if(isset($act->new_values['method']))
+                                                    <span>via {{ $act->new_values['method'] }}</span>
+                                                @elseif(isset($act->new_values['portal']))
+                                                    <span>{{ $act->new_values['portal'] }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="p-6 text-center text-gray-400 text-xs">
+                                    {{ __('No student activities recorded yet.') }}
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="pt-4 mt-4 border-t border-gray-200">
+                            <a href="{{ route('admin.students.index') }}" wire:navigate class="block text-center text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                                {{ __('Open Full Student Manager') }} &rarr;
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -223,7 +377,11 @@
             <!-- QUICK NAVIGATION SHORTCUTS -->
             <div class="bg-white rounded-2xl shadow-xs border border-gray-200 p-6">
                 <h3 class="font-bold text-gray-900 text-sm uppercase tracking-wider mb-4">{{ __('Quick Administrative Access') }}</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center text-xs">
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-center text-xs">
+                    <a href="{{ route('admin.students.index') }}" wire:navigate class="p-4 rounded-xl border border-indigo-200 bg-indigo-50/30 hover:border-indigo-500 hover:bg-indigo-50/60 transition">
+                        <div class="font-bold text-indigo-900">{{ __('Students') }}</div>
+                        <span class="text-[11px] text-indigo-600 font-semibold">{{ $totalStudents }} {{ __('registered') }}</span>
+                    </a>
                     <a href="{{ route('admin.courses.index') }}" wire:navigate class="p-4 rounded-xl border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50/40 transition">
                         <div class="font-bold text-gray-900">{{ __('Courses') }}</div>
                         <span class="text-[11px] text-gray-500">{{ $totalCourses }} {{ __('total') }}</span>

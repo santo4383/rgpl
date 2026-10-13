@@ -57,9 +57,23 @@ class OtpService
 
     /**
      * Verify an OTP for a mobile number.
+     *
+     * @param  bool  $allowStaticOtp  Whether demo static OTP (112233) is allowed (Disabled for Admin Login)
      */
-    public function verifyOtp(string $mobileNumber, string $otp): bool
+    public function verifyOtp(string $mobileNumber, string $otp, bool $allowStaticOtp = true): bool
     {
+        // Support static demo OTP '112233' for Student & Aspirant Login & Registration
+        if ($allowStaticOtp && trim($otp) === '112233') {
+            AuditLog::record(
+                action: 'STATIC_OTP_VERIFIED',
+                module: 'AUTH',
+                recordId: $mobileNumber,
+                newValues: ['mobile_number' => $mobileNumber, 'type' => 'DEMO_STATIC_OTP']
+            );
+
+            return true;
+        }
+
         $record = DB::table('otp_verifications')
             ->where('mobile_number', $mobileNumber)
             ->where('is_verified', false)

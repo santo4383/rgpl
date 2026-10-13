@@ -12,7 +12,8 @@ class Question extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'course_id', 'category_id', 'subcategory_id', 'question_type', 'language',
+        'course_id', 'category_id', 'subcategory_id', 'question_number', 'question_code',
+        'question_type', 'language',
         'question_text', 'question_html', 'explanation_text', 'explanation_html',
         'difficulty', 'source_type', 'source_name', 'source_year', 'source_reference',
         'status', 'is_free', 'is_premium', 'created_by', 'updated_by',

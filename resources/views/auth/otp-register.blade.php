@@ -10,7 +10,7 @@
             </p>
         </div>
 
-        <form method="POST" action="{{ route('register.send-otp') }}">
+        <form method="POST" action="{{ route('register.store') }}">
             @csrf
 
             <div>
@@ -51,6 +51,18 @@
                 <x-input-error :messages="$errors->get('address')" class="mt-2" />
             </div>
 
+            <div class="mt-4">
+                <x-input-label for="password" :value="__('Password')" />
+                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" placeholder="At least 8 characters" />
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            </div>
+
+            <div class="mt-4">
+                <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Re-enter password" />
+                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+            </div>
+
             @if(isset($courses) && count($courses) > 0)
                 <div class="mt-4">
                     <x-input-label :value="__('Select Target Stream(s) to Prepare')" />
@@ -73,7 +85,7 @@
                 </a>
 
                 <x-primary-button>
-                    {{ __('Send OTP') }}
+                    {{ __('Register') }}
                 </x-primary-button>
             </div>
         </form>

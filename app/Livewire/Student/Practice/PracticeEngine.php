@@ -238,6 +238,10 @@ class PracticeEngine extends Component
 
     public function nextQuestion()
     {
+        if (! $this->hasSubmitted) {
+            return;
+        }
+
         if ($this->currentIndex < count($this->questionIds) - 1) {
             $this->currentIndex++;
             $this->loadCurrentQuestion();
@@ -254,9 +258,23 @@ class PracticeEngine extends Component
 
     public function jumpToQuestion($index)
     {
+        $index = (int) $index;
+
+        // Prevent moving forward without submitting the current question
+        if ($index > $this->currentIndex && ! $this->hasSubmitted) {
+            return;
+        }
+
         if (isset($this->questionIds[$index])) {
-            $this->currentIndex = (int) $index;
+            $this->currentIndex = $index;
             $this->loadCurrentQuestion();
+        }
+    }
+
+    public function updatingCurrentIndex($value)
+    {
+        if ((int) $value > $this->currentIndex && ! $this->hasSubmitted) {
+            return false;
         }
     }
 
