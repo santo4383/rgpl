@@ -181,8 +181,8 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-xs">
-                                        <div class="font-medium text-gray-800 line-clamp-2 max-w-md">
-                                            {{ Str::limit(strip_tags($question->question_html ?: $question->question_text), 120) }}
+                                        <div class="math-content font-medium text-gray-800 line-clamp-2 max-w-md [&>p]:inline [&>p]:m-0">
+                                            {!! $question->question_html ?: nl2br(e($question->question_text)) !!}
                                         </div>
                                         <div class="text-[11px] text-gray-400 mt-1">
                                             {{ $question->options->count() }} {{ __('options') }}

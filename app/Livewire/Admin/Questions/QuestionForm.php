@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Question;
 use App\Models\Subcategory;
+use App\Support\MathHtml;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -195,8 +196,8 @@ class QuestionForm extends Component
             return;
         }
 
-        $questionText = strip_tags($this->question_html);
-        $explanationText = strip_tags($this->explanation_html);
+        $questionText = MathHtml::toPlainText($this->question_html);
+        $explanationText = MathHtml::toPlainText($this->explanation_html);
         $details = $this->getCalculatedQuestionDetails();
 
         $data = [
@@ -228,7 +229,7 @@ class QuestionForm extends Component
             $this->question->options()->create([
                 'option_key' => $opt['option_key'],
                 'option_html' => $opt['option_html'],
-                'option_text' => strip_tags($opt['option_html']),
+                'option_text' => MathHtml::toPlainText($opt['option_html']),
                 'is_correct' => ! empty($opt['is_correct']),
                 'sort_order' => $idx,
             ]);

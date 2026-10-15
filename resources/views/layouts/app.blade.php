@@ -13,6 +13,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('partials.math-render')
         @stack('styles')
     </head>
     <body class="font-sans antialiased">

@@ -175,7 +175,7 @@
                             <div class="p-6 space-y-4">
                                 <div class="text-base text-gray-900 leading-relaxed font-medium">
                                     @if($q->question_html)
-                                        <div class="prose max-w-none text-gray-900">{!! $q->question_html !!}</div>
+                                        <div class="math-content prose max-w-none text-gray-900">{!! $q->question_html !!}</div>
                                     @else
                                         <p class="whitespace-pre-line">{{ $q->question_text }}</p>
                                     @endif
@@ -216,7 +216,7 @@
                                             </div>
                                             <div class="flex-1 text-sm">
                                                 @if($opt->option_html)
-                                                    <div class="prose prose-sm max-w-none">{!! $opt->option_html !!}</div>
+                                                    <div class="math-content prose prose-sm max-w-none">{!! $opt->option_html !!}</div>
                                                 @else
                                                     {{ $opt->option_text }}
                                                 @endif
@@ -237,7 +237,7 @@
                                 @if($q->explanation_html || $q->explanation_text)
                                     <div class="mt-4 p-4 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-800 space-y-1">
                                         <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block">{{ __('Explanation & Solution:') }}</span>
-                                        <div class="prose prose-sm max-w-none text-gray-700">
+                                        <div class="math-content prose prose-sm max-w-none text-gray-700">
                                             {!! $q->explanation_html ?: nl2br(e($q->explanation_text)) !!}
                                         </div>
                                     </div>

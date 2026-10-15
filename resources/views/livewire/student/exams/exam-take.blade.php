@@ -112,7 +112,7 @@
                             <div class="p-6 sm:p-8 space-y-6">
                                 <div class="text-base sm:text-lg text-gray-900 leading-relaxed font-medium">
                                     @if($currentQuestion->question_html)
-                                        <div class="prose max-w-none text-gray-900">
+                                        <div class="math-content prose max-w-none text-gray-900">
                                             {!! $currentQuestion->question_html !!}
                                         </div>
                                     @else
@@ -150,7 +150,7 @@
 
                                             <div class="flex-1 text-sm font-medium text-gray-800">
                                                 @if($opt->option_html)
-                                                    <div class="prose prose-sm max-w-none">{!! $opt->option_html !!}</div>
+                                                    <div class="math-content prose prose-sm max-w-none">{!! $opt->option_html !!}</div>
                                                 @else
                                                     {{ $opt->option_text }}
                                                 @endif

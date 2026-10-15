@@ -51,6 +51,7 @@
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    @include('partials.math-render')
     <style>
         [x-cloak] { display: none !important; }
     </style>

@@ -281,4 +281,23 @@ class QuestionIndexTest extends TestCase
             ->assertSet('difficulty', '')
             ->assertSet('status', '');
     }
+
+    public function test_renders_mathematical_formula_html_in_snippet_with_math_content_class(): void
+    {
+        Question::create([
+            'course_id' => $this->course1->id,
+            'category_id' => $this->category1->id,
+            'question_code' => 'MATH-TEST-0001',
+            'question_text' => 'a = 63, b = 18, तर $\\sqrt{(a+b)^{2}}$ = किती ?',
+            'question_html' => '<p>a = 63, b = 18, तर&nbsp;<span class="ql-formula" data-value="\\sqrt{(a+b)^{2}}">\\sqrt{(a+b)^{2}}</span> = किती ?</p>',
+            'difficulty' => 'Medium',
+            'status' => 'PUBLISHED',
+        ]);
+
+        Livewire::actingAs($this->admin)
+            ->test(QuestionIndex::class)
+            ->assertSeeHtml('math-content')
+            ->assertSeeHtml('class="ql-formula" data-value="\sqrt{(a+b)^{2}}"')
+            ->assertDontSee('&amp;nbsp;');
+    }
 }

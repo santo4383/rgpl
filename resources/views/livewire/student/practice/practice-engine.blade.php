@@ -141,7 +141,7 @@
 
                     <!-- Question Content -->
                     <div class="p-6 md:p-8">
-                        <div class="prose max-w-none text-gray-900 text-base md:text-lg leading-relaxed font-normal mb-8">
+                        <div class="math-content prose max-w-none text-gray-900 text-base md:text-lg leading-relaxed font-normal mb-8">
                             {!! $currentQuestion->question_html ?: nl2br(e($currentQuestion->question_text)) !!}
                         </div>
 
@@ -187,7 +187,7 @@
                                             {{ $option->option_key }}
                                         @endif
                                     </div>
-                                    <div class="flex-grow text-gray-800 text-sm md:text-base pt-1">
+                                    <div class="math-content flex-grow text-gray-800 text-sm md:text-base pt-1">
                                         {!! $option->option_html ?: e($option->option_text) !!}
                                     </div>
                                 </div>
@@ -218,7 +218,7 @@
                                 @if($currentQuestion->explanation_html || $currentQuestion->explanation_text)
                                     <div class="p-5 text-sm text-gray-800 border-t {{ $isCurrentCorrect ? 'border-emerald-200' : 'border-rose-200' }}">
                                         <div class="font-bold text-xs text-gray-600 uppercase tracking-wider mb-2">{{ __('Explanation & Notes:') }}</div>
-                                        <div class="prose prose-sm max-w-none text-gray-700">
+                                        <div class="math-content prose prose-sm max-w-none text-gray-700">
                                             {!! $currentQuestion->explanation_html ?: nl2br(e($currentQuestion->explanation_text)) !!}
                                         </div>
                                     </div>
